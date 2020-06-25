@@ -2,8 +2,9 @@
 	"name": "restore-terminals",
 	"displayName": "Restore Terminals",
 	"description": "Configure how your integrated VSCode terminals open at startup",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"publisher": "EthanSK",
+	"icon": "icon.png",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/EthanSK/restore-terminals-vscode"
