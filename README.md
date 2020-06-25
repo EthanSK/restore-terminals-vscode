@@ -1,6 +1,6 @@
 # Restore Terminals
 
-Automatically spawn terminal windows and split terminals with any shell commands when VSCode starts up!
+Automatically spawn integrated terminal windows and split terminals, and run any shell commands when VSCode starts up!
 
 ## How to use
 
