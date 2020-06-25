@@ -11,7 +11,8 @@ export async function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('restore-terminals is now active!');
 
-	const shouldRunOnStartup: boolean | undefined = vscode.workspace.getConfiguration("restoreTerminals").get("shouldRunOnStartup")
+	const shouldRunOnStartup: boolean | undefined = vscode.workspace.getConfiguration("restoreTerminals").get("runOnStartup")
+
 
 
 	// The command has been defined in the package.json file

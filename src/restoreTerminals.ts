@@ -7,6 +7,7 @@ export default async function restoreTerminals() {
   console.log("restoring terminals")
   // Display a message box to the user
   // vscode.window.showInformationMessage('Restoring terminals'); //TODO:  remove later
+  const keepExistingTerminalsOpen: boolean | undefined = vscode.workspace.getConfiguration("restoreTerminals").get("keepExistingTerminalsOpen")
 
   const terminalWindows: TerminalWindow[] | undefined = vscode.workspace.getConfiguration("restoreTerminals").get("terminals")
 
@@ -15,7 +16,7 @@ export default async function restoreTerminals() {
     return
   }
 
-  if (vscode.window.activeTerminal) {
+  if (vscode.window.activeTerminal && !keepExistingTerminalsOpen) {
     // await delay(2000)
     // vscode.window.activeTerminal?.dispose()
     vscode.window.terminals.forEach(terminal => {
@@ -47,7 +48,6 @@ export default async function restoreTerminals() {
     //the first terminal split is already created from when we called createTerminal
     if (terminalWindow.splitTerminals.length > 0) {
       const commands = terminalWindow.splitTerminals[0].commands
-      // await runCommands(commands, term)
       commandsToRunInTerms.push({
         commands,
         terminal: term
@@ -59,7 +59,7 @@ export default async function restoreTerminals() {
       const commands = splitTerminal.commands
       commandsToRunInTerms.push({
         commands,
-        terminal: term
+        terminal: createdSplitTerm
       })
     }
   }
@@ -74,7 +74,6 @@ async function runCommands(commands: string[], terminal: vscode.Terminal) {
   for (let j = 0; j < commands.length; j++) {
     const command = commands[j];
     terminal.sendText(command)
-    await delay(100)
   }
 }
 
