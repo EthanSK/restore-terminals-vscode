@@ -69,23 +69,23 @@ Added features X, Y, and Z.
     {
       "splitTerminals": [
         {
-          "commandToRun": "echo 'window 1 split 1'"
+          "commands": ["npm i", "echo 'window 1 split 1'"]
         },
         {
-          "commandToRun": "echo 'window 1 split 2'"
+          "commands": ["echo 'window 1 split 2'"]
         },
         {
-          "commandToRun": "echo 'window 1 split 3'"
+          "commands": ["echo 'window 1 split 3'"]
         }
       ]
     },
     {
       "splitTerminals": [
         {
-          "commandToRun": "echo 'window 2 split 1'"
+          "commands": ["echo 'window 2 split 1'"]
         },
         {
-          "commandToRun": "echo 'window 2 split 2'"
+          "commands": ["echo 'window 2 split 2'"]
         }
       ]
     }

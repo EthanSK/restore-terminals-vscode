@@ -27,7 +27,11 @@ export default async function restoreTerminals() {
     })
   }
   await delay(500)
-
+  let commandsToRunInTerms: {
+    commands: string[]
+    terminal: vscode.Terminal
+  }[] = []
+  //create the terminals sequentially so theres no glitches, but run the commands in parallel
   for (const terminalWindow of terminalWindows) {
     if (!terminalWindow.splitTerminals) {
       // vscode.window.showInformationMessage("No split terminal configuration provided to restore terminals with.") //this might be annoying
@@ -43,16 +47,34 @@ export default async function restoreTerminals() {
     //the first terminal split is already created from when we called createTerminal
     if (terminalWindow.splitTerminals.length > 0) {
       const commands = terminalWindow.splitTerminals[0].commands
-      commands.forEach(com => term.sendText(com))
+      // await runCommands(commands, term)
+      commandsToRunInTerms.push({
+        commands,
+        terminal: term
+      })
     }
     for (let i = 1; i < terminalWindow.splitTerminals.length; i++) {
       const splitTerminal = terminalWindow.splitTerminals[i];
       const createdSplitTerm = await createNewSplitTerminal()
       const commands = splitTerminal.commands
-      commands.forEach(com => term.sendText(com))
-      // await delay(500)
-
+      commandsToRunInTerms.push({
+        commands,
+        terminal: term
+      })
     }
+  }
+
+  //we run the actual commands in parallel
+  commandsToRunInTerms.forEach(async el => {
+    await runCommands(el.commands, el.terminal)
+  })
+}
+
+async function runCommands(commands: string[], terminal: vscode.Terminal) {
+  for (let j = 0; j < commands.length; j++) {
+    const command = commands[j];
+    terminal.sendText(command)
+    await delay(100)
   }
 }
 
