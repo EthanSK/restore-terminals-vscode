@@ -19,7 +19,35 @@
 				"command": "restore-terminals.restoreTerminals",
 				"title": "Restore Terminals"
 			}
-		]
+		],
+		"configuration": {
+			"title": "Restore Terminals Config",
+			"type": "object",
+			"properties": {
+				"restoreTerminals.terminals": {
+					"type": "array",
+					"items": {
+						"properties": {
+							"terminalName": {
+								"type": "string",
+								"description": "The name to give the terminal."
+							},
+							"splitTerminals": {
+								"type": "array",
+								"items": {
+									"properties": {
+										"commandToRun": {
+											"type": "string",
+											"description": "The shell command to execute when this terminal opens."
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

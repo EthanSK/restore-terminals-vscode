@@ -1,11 +1,19 @@
 import * as vscode from 'vscode';
 import { delay } from './utilts';
+import { TerminalConfig, TerminalWindow } from './model';
 
 
 export default async function restoreTerminals() {
 
   // Display a message box to the user
   // vscode.window.showInformationMessage('Restoring terminals'); //TODO:  remove later
+
+  const terminalWindows: TerminalWindow[] | undefined = vscode.workspace.getConfiguration("restoreTerminals").get("terminals")
+  console.log("config", terminalWindows)
+  if (!terminalWindows) {
+    vscode.window.showInformationMessage("No terminal configuration provided to restore terminals with.")
+    return
+  }
 
   if (vscode.window.activeTerminal) {
     await delay(2000)
@@ -19,28 +27,41 @@ export default async function restoreTerminals() {
     })
   }
 
-  vscode.window.createTerminal({
-    name: "test name boi",
-    // cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
-  })
+  for (const terminalWindow of terminalWindows) {
+    vscode.window.createTerminal({
+      // name: "yes" //don't set it, make it set depending on the split terminals
+      //  cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
+    })
+    for (const splitTerminal of terminalWindow.splitTerminals) {
+      const createdSplitTerm = await createNewSplitTerminal()
+      createdSplitTerm.sendText(splitTerminal.commandToRun)
+    }
+
+  }
+
+
+  // vscode.window.createTerminal({
+  //   name: "test name boi",
+  //   // cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
+  // })
 
   // vscode.window.createTerminal({
   //   name: "2222",
   //   // cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
   // })
-  await delay(2000)
+  // await delay(2000)
 
-  vscode.window.terminals.forEach(terminal => {
-    terminal.show()
-    terminal.sendText(`echo "hello poo"`)
-  })
+  // vscode.window.terminals.forEach(terminal => {
+  //   terminal.show()
+  //   terminal.sendText(`echo "hello poo"`)
+  // })
 
-  await delay(2000)
-  const split = await createNewSplitTerminal()
-  split.sendText("yeeet")
+  // await delay(2000)
+  // const split = await createNewSplitTerminal()
+  // split.sendText("yeeet")
 
-  const split2 = await createNewSplitTerminal()
-  split2.sendText("yote")
+  // const split2 = await createNewSplitTerminal()
+  // split2.sendText("yote")
 
 }
 
