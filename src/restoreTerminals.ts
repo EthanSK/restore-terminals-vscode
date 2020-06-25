@@ -41,7 +41,7 @@ export default async function restoreTerminals() {
       return
     }
     const term = vscode.window.createTerminal({
-      // name: "yes" //don't set it, make it set depending on the split terminals
+      name: terminalWindow.splitTerminals[0]?.name
       //  cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
     })
     term.show()
@@ -56,7 +56,7 @@ export default async function restoreTerminals() {
     }
     for (let i = 1; i < terminalWindow.splitTerminals.length; i++) {
       const splitTerminal = terminalWindow.splitTerminals[i];
-      const createdSplitTerm = await createNewSplitTerminal()
+      const createdSplitTerm = await createNewSplitTerminal(splitTerminal.name)
       const commands = splitTerminal.commands
       commandsToRunInTerms.push({
         commands,
@@ -78,9 +78,14 @@ async function runCommands(commands: string[], terminal: vscode.Terminal) {
   }
 }
 
-async function createNewSplitTerminal(): Promise<vscode.Terminal> {
+async function createNewSplitTerminal(name: string | undefined): Promise<vscode.Terminal> {
   return new Promise(async (resolve, reject) => {
     await vscode.commands.executeCommand("workbench.action.terminal.split");
+    if (name) {
+      await vscode.commands.executeCommand("workbench.action.terminal.renameWithArg", {
+        name
+      })
+    }
 
     vscode.window.onDidChangeActiveTerminal((terminal) => {
       if (terminal) {

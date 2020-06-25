@@ -5,24 +5,29 @@ import restoreTerminals from './restoreTerminals';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-export async function activate(context: vscode.ExtensionContext) {
+
+//do NOT make async and await the async functions in this func, or the command just doesn't work
+export function activate(context: vscode.ExtensionContext) {
 
 	console.log('restore-terminals is now active!');
 
 	const shouldRunOnStartup: boolean | undefined = vscode.workspace.getConfiguration("restoreTerminals").get("runOnStartup")
 
-	if (shouldRunOnStartup) {
-		await restoreTerminals() //run on startup
 
-	}
 
 	let disposable = vscode.commands.registerCommand('restore-terminals.restoreTerminals', async () => {
 
-		await restoreTerminals()
+		restoreTerminals()
 
 	});
 
 	context.subscriptions.push(disposable);
+
+
+	if (shouldRunOnStartup) {
+		restoreTerminals() //run on startup
+
+	}
 }
 
 // this method is called when your extension is deactivated
