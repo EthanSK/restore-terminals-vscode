@@ -9,14 +9,13 @@ export default async function restoreTerminals() {
   // vscode.window.showInformationMessage('Restoring terminals'); //TODO:  remove later
 
   const terminalWindows: TerminalWindow[] | undefined = vscode.workspace.getConfiguration("restoreTerminals").get("terminals")
-  console.log("config", terminalWindows)
   if (!terminalWindows) {
-    vscode.window.showInformationMessage("No terminal configuration provided to restore terminals with.")
+    // vscode.window.showInformationMessage("No terminal window configuration provided to restore terminals with.") //this might be annoying
     return
   }
 
   if (vscode.window.activeTerminal) {
-    await delay(2000)
+    // await delay(2000)
     // vscode.window.activeTerminal?.dispose()
     vscode.window.terminals.forEach(terminal => {
 
@@ -26,43 +25,32 @@ export default async function restoreTerminals() {
 
     })
   }
+  await delay(2000)
 
   for (const terminalWindow of terminalWindows) {
-    vscode.window.createTerminal({
+    if (!terminalWindow.splitTerminals) {
+      // vscode.window.showInformationMessage("No split terminal configuration provided to restore terminals with.") //this might be annoying
+      return
+    }
+    const term = vscode.window.createTerminal({
       // name: "yes" //don't set it, make it set depending on the split terminals
       //  cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
     })
-    for (const splitTerminal of terminalWindow.splitTerminals) {
+    term.show()
+    // await delay(500)
+
+    //the first terminal split is already created from when we called createTerminal
+    if (terminalWindow.splitTerminals.length > 0) {
+      term.sendText(terminalWindow.splitTerminals[0].commandToRun)
+    }
+    for (let i = 1; i < terminalWindow.splitTerminals.length; i++) {
+      const splitTerminal = terminalWindow.splitTerminals[i];
       const createdSplitTerm = await createNewSplitTerminal()
       createdSplitTerm.sendText(splitTerminal.commandToRun)
+      await delay(500)
+
     }
-
   }
-
-
-  // vscode.window.createTerminal({
-  //   name: "test name boi",
-  //   // cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
-  // })
-
-  // vscode.window.createTerminal({
-  //   name: "2222",
-  //   // cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
-  // })
-  // await delay(2000)
-
-  // vscode.window.terminals.forEach(terminal => {
-  //   terminal.show()
-  //   terminal.sendText(`echo "hello poo"`)
-  // })
-
-  // await delay(2000)
-  // const split = await createNewSplitTerminal()
-  // split.sendText("yeeet")
-
-  // const split2 = await createNewSplitTerminal()
-  // split2.sendText("yote")
-
 }
 
 async function createNewSplitTerminal(): Promise<vscode.Terminal> {

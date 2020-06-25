@@ -28,10 +28,6 @@
 					"type": "array",
 					"items": {
 						"properties": {
-							"terminalName": {
-								"type": "string",
-								"description": "The name to give the terminal."
-							},
 							"splitTerminals": {
 								"type": "array",
 								"items": {
