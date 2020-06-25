@@ -37,7 +37,7 @@ export default async function restoreTerminals() {
       //  cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
     })
     term.show()
-    // await delay(500)
+    await delay(500)
 
     //the first terminal split is already created from when we called createTerminal
     if (terminalWindow.splitTerminals.length > 0) {
@@ -47,7 +47,7 @@ export default async function restoreTerminals() {
       const splitTerminal = terminalWindow.splitTerminals[i];
       const createdSplitTerm = await createNewSplitTerminal()
       createdSplitTerm.sendText(splitTerminal.commandToRun)
-      await delay(500)
+      // await delay(500)
 
     }
   }
