@@ -10,14 +10,14 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:restore-terminals.helloWorld"
+		"onStartupFinished"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "restore-terminals.helloWorld",
-				"title": "Hello World"
+				"command": "restore-terminals.restoreTerminals",
+				"title": "Restore Terminals"
 			}
 		]
 	},
