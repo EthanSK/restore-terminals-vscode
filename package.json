@@ -34,6 +34,14 @@
 					"default": false,
 					"description": "Whether or not to keep any currently open terminals open when restoring."
 				},
+				"restoreTerminals.artificialDelayMilliseconds": {
+					"type": [
+						"number",
+						"null"
+					],
+					"default": 150,
+					"description": "If you find restore terminals glitching out, or running some commands in the wrong window, you might want to try increasing this number to further delay the processing of actions. If you find it taking too long to open the terminal windows, you can try reducing this number, be be cautious as if it's too fast it will bug out."
+				},
 				"restoreTerminals.terminals": {
 					"type": "array",
 					"items": {

@@ -1,93 +1,53 @@
-# restore-terminals README
+# Restore Terminals
 
-This is the README for your extension "restore-terminals". After writing up a brief description, we recommend including the following sections.
+Automatically spawn terminal windows and split terminals with any shell commands when VSCode starts up!
 
-## Features
+## How to use
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-- `myExtension.enable`: enable/disable this extension
-- `myExtension.thing`: set to `blah` to do something
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-- Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-- Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-- Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-- [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-- [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Simply configure your VSCode settings JSON file to look something like this:
 
 ```
  "restoreTerminals.terminals": [
     {
       "splitTerminals": [
         {
-          "commands": ["npm i", "echo 'window 1 split 1'"]
+          "commands": ["npm i", "npm run dev"]
         },
         {
-          "commands": ["echo 'window 1 split 2'"]
+          "commands": ["npm run dev:client"]
         },
         {
-          "commands": ["echo 'window 1 split 3'"]
+          "commands": ["jest --watch"]
         }
       ]
     },
     {
       "splitTerminals": [
         {
-          "commands": ["echo 'window 2 split 1'"]
+          "commands": ["npm run eslint", "npm run build", "npm run e2e", "npm run deploy"]
         },
         {
-          "commands": ["echo 'window 2 split 2'"]
+          "commands": ["npm-run-all --parallel redis tsc-watch-start worker"]
         }
       ]
     }
   ]
 ```
+
+The outer array represents a integrated VSCode terminal window, and the `splitTerminals` array contains the information about how each terminal window should be split up.
+
+## Extra info
+
+The order of split terminals from left to right is the order in the array.
+
+You can manually trigger the restoration of terminals by running `Restore Terminals` in the command palette.
+
+If you find the extension glitching out, try increasing the `restoreTerminals.artificialDelayMilliseconds` setting to a higher number, such as `1000`.
+
+If you do not want this extension to close the currently open terminal windows, you can simply set `restoreTerminals.keepExistingTerminalsOpen` to `true`.
+
+If you do not want it to restore terminals on VSCode startup, but instead only run when you trigger it manually from the command palette, then set `restoreTerminals.runOnStartup` to `false`.
+
+Contributions to the code are very welcome and much appreciated!
+
+**Enjoy!**

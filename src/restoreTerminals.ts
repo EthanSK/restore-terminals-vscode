@@ -2,12 +2,15 @@ import * as vscode from 'vscode';
 import { delay } from './utilts';
 import { TerminalConfig, TerminalWindow } from './model';
 
-
+const DEFAULT_ARTIFICAL_DELAY = 150
 export default async function restoreTerminals() {
   console.log("restoring terminals")
   // Display a message box to the user
   // vscode.window.showInformationMessage('Restoring terminals'); //TODO:  remove later
   const keepExistingTerminalsOpen: boolean | undefined = vscode.workspace.getConfiguration("restoreTerminals").get("keepExistingTerminalsOpen")
+
+  const artificialDelayMilliseconds: number | undefined = vscode.workspace.getConfiguration("restoreTerminals").get("artificialDelayMilliseconds")
+
 
   const terminalWindows: TerminalWindow[] | undefined = vscode.workspace.getConfiguration("restoreTerminals").get("terminals")
 
@@ -17,8 +20,6 @@ export default async function restoreTerminals() {
   }
 
   if (vscode.window.activeTerminal && !keepExistingTerminalsOpen) {
-    // await delay(2000)
-    // vscode.window.activeTerminal?.dispose()
     vscode.window.terminals.forEach(terminal => {
 
       //i think calling terminal.dispose before creating the new termials causes error because the terminal has disappeard and it fux up. we can do it after, and check that the terminal we are deleting is not in the list of terminals we just created 
@@ -27,7 +28,8 @@ export default async function restoreTerminals() {
 
     })
   }
-  await delay(500)
+  await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY) //without delay it starts bugging out
+
   let commandsToRunInTerms: {
     commands: string[]
     terminal: vscode.Terminal
@@ -43,8 +45,7 @@ export default async function restoreTerminals() {
       //  cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
     })
     term.show()
-    await delay(500)
-
+    await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY)
     //the first terminal split is already created from when we called createTerminal
     if (terminalWindow.splitTerminals.length > 0) {
       const commands = terminalWindow.splitTerminals[0].commands
