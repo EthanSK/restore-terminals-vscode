@@ -4,11 +4,12 @@ import { TerminalConfig, TerminalWindow } from './model';
 
 
 export default async function restoreTerminals() {
-
+  console.log("restoring terminals")
   // Display a message box to the user
   // vscode.window.showInformationMessage('Restoring terminals'); //TODO:  remove later
 
   const terminalWindows: TerminalWindow[] | undefined = vscode.workspace.getConfiguration("restoreTerminals").get("terminals")
+
   if (!terminalWindows) {
     // vscode.window.showInformationMessage("No terminal window configuration provided to restore terminals with.") //this might be annoying
     return
@@ -25,7 +26,7 @@ export default async function restoreTerminals() {
 
     })
   }
-  await delay(2000)
+  await delay(500)
 
   for (const terminalWindow of terminalWindows) {
     if (!terminalWindow.splitTerminals) {
@@ -41,12 +42,14 @@ export default async function restoreTerminals() {
 
     //the first terminal split is already created from when we called createTerminal
     if (terminalWindow.splitTerminals.length > 0) {
-      term.sendText(terminalWindow.splitTerminals[0].commandToRun)
+      const commands = terminalWindow.splitTerminals[0].commands
+      commands.forEach(com => term.sendText(com))
     }
     for (let i = 1; i < terminalWindow.splitTerminals.length; i++) {
       const splitTerminal = terminalWindow.splitTerminals[i];
       const createdSplitTerm = await createNewSplitTerminal()
-      createdSplitTerm.sendText(splitTerminal.commandToRun)
+      const commands = splitTerminal.commands
+      commands.forEach(com => term.sendText(com))
       // await delay(500)
 
     }

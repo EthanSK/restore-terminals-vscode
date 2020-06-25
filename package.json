@@ -24,6 +24,11 @@
 			"title": "Restore Terminals Config",
 			"type": "object",
 			"properties": {
+				"restoreTerminals.shouldRunOnStartup": {
+					"type": "boolean",
+					"default": true,
+					"description": "Whether or not to restore the terminals when VSCode starts up."
+				},
 				"restoreTerminals.terminals": {
 					"type": "array",
 					"items": {
@@ -32,9 +37,15 @@
 								"type": "array",
 								"items": {
 									"properties": {
-										"commandToRun": {
-											"type": "string",
-											"description": "The shell command to execute when this terminal opens."
+										"commands": {
+											"type": "array",
+											"description": "The shell commands to execute when this terminal opens.",
+											"items": {
+												"properties": {
+													"type": "string",
+													"description": "A shell command to run."
+												}
+											}
 										}
 									}
 								}

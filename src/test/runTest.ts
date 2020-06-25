@@ -3,6 +3,7 @@ import * as path from 'path';
 import { runTests } from 'vscode-test';
 
 async function main() {
+	return //don't want any weird shit going down
 	try {
 		// The folder containing the Extension Manifest package.json
 		// Passed to `--extensionDevelopmentPath`

@@ -1,6 +1,6 @@
 
 export type TerminalConfig = {
-  commandToRun: string
+  commands: string[]
 }
 
 export type TerminalWindow = {
