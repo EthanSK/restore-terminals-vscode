@@ -53,6 +53,8 @@ If you do not want this extension to close the currently open terminal windows, 
 
 If you do not want it to restore terminals on VSCode startup, but instead only run when you trigger it manually from the command palette, then set `restoreTerminals.runOnStartup` to `false`.
 
+If you don't like using split terminals, then just provide one object in each split terminal array, which should be the intuitive thing to do.
+
 Contributions to the [code](https://github.com/EthanSK/restore-terminals-vscode) are very welcome and much appreciated!
 
 **Enjoy!**
