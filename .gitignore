@@ -14,7 +14,7 @@ target
 out
 node_modules
 dist
-.vscode
+# .vscode
 srcOLD
 junk
 graphql.schema.json
