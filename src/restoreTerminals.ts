@@ -1,32 +1,18 @@
 import * as vscode from "vscode";
 import { delay } from "./utils";
-import { TerminalConfig, TerminalWindow } from "./model";
+import { Configuration, TerminalConfig, TerminalWindow } from "./model";
 
 const DEFAULT_ARTIFICAL_DELAY = 150;
 const SPLIT_TERM_CHECK_DELAY = 100;
 const MAX_TERM_CHECK_ATTEMPTS = 500; //this times SPLIT_TERM_CHECK_DELAY is the timeout
 
-export default async function restoreTerminals() {
-  console.log("restoring terminals");
-  // Display a message box to the user
-  // vscode.window.showInformationMessage('Restoring terminals'); //TODO:  remove later
-  const keepExistingTerminalsOpen:
-    | boolean
-    | undefined = vscode.workspace
-    .getConfiguration("restoreTerminals")
-    .get("keepExistingTerminalsOpen");
-
-  const artificialDelayMilliseconds:
-    | number
-    | undefined = vscode.workspace
-    .getConfiguration("restoreTerminals")
-    .get("artificialDelayMilliseconds");
-
-  const terminalWindows:
-    | TerminalWindow[]
-    | undefined = vscode.workspace
-    .getConfiguration("restoreTerminals")
-    .get("terminals");
+export default async function restoreTerminals(configuration: Configuration) {
+  console.log("restoring terminals", configuration);
+  const {
+    keepExistingTerminalsOpen,
+    artificialDelayMilliseconds,
+    terminalWindows,
+  } = configuration;
 
   if (!terminalWindows) {
     // vscode.window.showInformationMessage("No terminal window configuration provided to restore terminals with.") //this might be annoying
@@ -37,7 +23,7 @@ export default async function restoreTerminals() {
     vscode.window.terminals.forEach((terminal) => {
       //i think calling terminal.dispose before creating the new termials causes error because the terminal has disappeard and it fux up. we can do it after, and check that the terminal we are deleting is not in the list of terminals we just created
       console.log(`disposing terminal ${terminal.name}`);
-      terminal.dispose(); //TODO: - make this an option, have it on by default
+      terminal.dispose();
     });
   }
   await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY); //without delay it starts bugging out
