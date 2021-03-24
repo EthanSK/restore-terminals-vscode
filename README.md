@@ -41,7 +41,7 @@ Simply configure your VSCode settings JSON file to look something like this:
 
 The outer array represents a integrated VSCode terminal window, and the `splitTerminals` array contains the information about how each terminal window should be split up.
 
-<!-- You can also use a `restore-terminals.json` config file under `.vscode` folder. A sample config file is [here](restore-terminal.json) -->
+You can also use a custom config file under. The file should be at `.vscode/restore-terminals.json` in any workspace you want. A sample config file is [here](https://github.com/EthanSK/restore-terminals-vscode/blob/master/.vscode/SAMPLE_restore-terminals.json)
 
 ## Extra info
 
