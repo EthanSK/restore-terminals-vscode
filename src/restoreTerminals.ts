@@ -1,8 +1,11 @@
 import * as vscode from "vscode";
-import { delay } from "./utilts";
+import { delay } from "./utils";
 import { TerminalConfig, TerminalWindow } from "./model";
 
 const DEFAULT_ARTIFICAL_DELAY = 150;
+const SPLIT_TERM_CHECK_DELAY = 100;
+const MAX_TERM_CHECK_ATTEMPTS = 500; //this times SPLIT_TERM_CHECK_DELAY is the timeout
+
 export default async function restoreTerminals() {
   console.log("restoring terminals");
   // Display a message box to the user
@@ -81,7 +84,7 @@ export default async function restoreTerminals() {
 }
 
 async function runCommands(commands: string[], terminal: vscode.Terminal) {
-  for (let j = 0; j < commands.length; j++) {
+  for (let j = 0; j < commands?.length; j++) {
     const command = commands[j];
     terminal.sendText(command);
   }
@@ -91,6 +94,7 @@ async function createNewSplitTerminal(
   name: string | undefined
 ): Promise<vscode.Terminal> {
   return new Promise(async (resolve, reject) => {
+    const numTermsBefore = vscode.window.terminals.length;
     await vscode.commands.executeCommand("workbench.action.terminal.split");
     if (name) {
       await vscode.commands.executeCommand(
@@ -100,11 +104,20 @@ async function createNewSplitTerminal(
         }
       );
     }
-
-    vscode.window.onDidChangeActiveTerminal((terminal) => {
-      if (terminal) {
-        resolve(terminal);
+    let attemptCount = 0;
+    while (true) {
+      const numTermsNow = vscode.window.terminals?.length;
+      if (attemptCount > MAX_TERM_CHECK_ATTEMPTS) {
+        reject();
+        break;
       }
-    });
+      if (numTermsNow > numTermsBefore) {
+        resolve(vscode.window.terminals[numTermsNow - 1]);
+        break; //we know the terminal has now been split
+      } else {
+        await delay(SPLIT_TERM_CHECK_DELAY);
+        attemptCount++;
+      }
+    }
   });
 }

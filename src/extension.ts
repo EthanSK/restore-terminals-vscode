@@ -10,9 +10,7 @@ import restoreTerminals from "./restoreTerminals";
 export function activate(context: vscode.ExtensionContext) {
   console.log("restore-terminals is now active!");
 
-  const shouldRunOnStartup:
-    | boolean
-    | undefined = vscode.workspace
+  const runOnStartup: boolean | undefined = vscode.workspace
     .getConfiguration("restoreTerminals")
     .get("runOnStartup");
 
@@ -25,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(disposable);
 
-  if (shouldRunOnStartup) {
+  if (runOnStartup) {
     restoreTerminals(); //run on startup
   }
 }
