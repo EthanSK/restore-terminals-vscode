@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
 import { Configuration, JsonConfiguration, TerminalWindow } from "./model";
-import * as fs from "fs-extra";
 import { TextDecoder } from "text-encoding";
 import * as path from "path";
 
