@@ -1,9 +1,8 @@
-
 export type TerminalConfig = {
-  commands: string[],
-  name?: string,
-}
+  commands: string[];
+  name?: string;
+};
 
 export type TerminalWindow = {
-  splitTerminals?: TerminalConfig[]
-}
+  splitTerminals?: TerminalConfig[];
+};
