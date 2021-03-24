@@ -11,21 +11,19 @@ import restoreTerminals from "./restoreTerminals";
 export async function activate(context: vscode.ExtensionContext) {
   console.log("restore-terminals is now active!");
 
-  const runOnStartup: boolean | undefined = vscode.workspace
-    .getConfiguration("restoreTerminals")
-    .get("runOnStartup");
+  const config = await getConfiguration(); //mast be done here so json config works for runOnStartup
 
   let disposable = vscode.commands.registerCommand(
     "restore-terminals.restoreTerminals",
     async () => {
-      restoreTerminals(await getConfiguration());
+      restoreTerminals(await getConfiguration()); //get fresh config here
     }
   );
 
   context.subscriptions.push(disposable);
 
-  if (runOnStartup) {
-    restoreTerminals(await getConfiguration()); //run on startup
+  if (config.runOnStartup) {
+    restoreTerminals(config); //run on startup
   }
 }
 
