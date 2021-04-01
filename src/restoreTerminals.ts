@@ -22,7 +22,7 @@ export default async function restoreTerminals(configuration: Configuration) {
   if (vscode.window.activeTerminal && !keepExistingTerminalsOpen) {
     vscode.window.terminals.forEach((terminal) => {
       //i think calling terminal.dispose before creating the new termials causes error because the terminal has disappeard and it fux up. we can do it after, and check that the terminal we are deleting is not in the list of terminals we just created
-      console.log(`disposing terminal ${terminal.name}`);
+      console.log(`Disposing terminal ${terminal.name}`);
       terminal.dispose();
     });
   }
@@ -62,7 +62,7 @@ export default async function restoreTerminals(configuration: Configuration) {
       });
     }
   }
-
+  await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
   //we run the actual commands in parallel
   commandsToRunInTerms.forEach(async (el) => {
     await runCommands(el.commands, el.terminal);
