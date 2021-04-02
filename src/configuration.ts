@@ -27,14 +27,15 @@ export async function getConfiguration(): Promise<Configuration> {
     .get("runOnStartup");
 
   const configFromFile = await getConfigurationFromJsonFile();
-  return (
-    configFromFile ?? {
-      keepExistingTerminalsOpen,
+  return {
+    keepExistingTerminalsOpen:
+      configFromFile?.keepExistingTerminalsOpen ?? keepExistingTerminalsOpen,
+    artificialDelayMilliseconds:
+      configFromFile?.artificialDelayMilliseconds ??
       artificialDelayMilliseconds,
-      terminalWindows,
-      runOnStartup,
-    }
-  );
+    terminalWindows: configFromFile?.terminalWindows ?? terminalWindows,
+    runOnStartup: configFromFile?.runOnStartup ?? runOnStartup,
+  };
 }
 
 async function getConfigurationFromJsonFile(): Promise<
