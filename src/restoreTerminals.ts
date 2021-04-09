@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { delay } from "./utils";
 import { Configuration, TerminalConfig, TerminalWindow } from "./model";
 
-const DEFAULT_ARTIFICAL_DELAY = 150;
+const DEFAULT_ARTIFICAL_DELAY = 300;
 const SPLIT_TERM_CHECK_DELAY = 100;
 const MAX_TERM_CHECK_ATTEMPTS = 500; //this times SPLIT_TERM_CHECK_DELAY is the timeout
 
