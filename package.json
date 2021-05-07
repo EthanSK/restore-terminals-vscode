@@ -2,7 +2,7 @@
   "name": "restore-terminals",
   "displayName": "Restore Terminals",
   "description": "Spawn integrated terminals and run commands on startup",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "publisher": "EthanSK",
   "icon": "icon.png",
   "repository": {
@@ -69,6 +69,10 @@
                           "description": "A shell command to run."
                         }
                       }
+                    },
+                    "shouldRunCommands": {
+                      "type": "boolean",
+                      "description": "Whether to actually run the commands in the terminal, or just paste them there."
                     }
                   }
                 }

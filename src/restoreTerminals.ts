@@ -30,6 +30,7 @@ export default async function restoreTerminals(configuration: Configuration) {
 
   let commandsToRunInTerms: {
     commands: string[];
+    shouldRunCommands: boolean;
     terminal: vscode.Terminal;
   }[] = [];
   //create the terminals sequentially so theres no glitches, but run the commands in parallel
@@ -46,33 +47,41 @@ export default async function restoreTerminals(configuration: Configuration) {
     await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
     //the first terminal split is already created from when we called createTerminal
     if (terminalWindow.splitTerminals.length > 0) {
-      const commands = terminalWindow.splitTerminals[0].commands;
-      commandsToRunInTerms.push({
-        commands,
-        terminal: term,
-      });
+      const { commands, shouldRunCommands } = terminalWindow.splitTerminals[0];
+      commands &&
+        commandsToRunInTerms.push({
+          commands,
+          shouldRunCommands: shouldRunCommands ?? true,
+          terminal: term,
+        });
     }
     for (let i = 1; i < terminalWindow.splitTerminals.length; i++) {
       const splitTerminal = terminalWindow.splitTerminals[i];
       const createdSplitTerm = await createNewSplitTerminal(splitTerminal.name);
-      const commands = splitTerminal.commands;
-      commandsToRunInTerms.push({
-        commands,
-        terminal: createdSplitTerm,
-      });
+      const { commands, shouldRunCommands } = splitTerminal;
+      commands &&
+        commandsToRunInTerms.push({
+          commands,
+          shouldRunCommands: shouldRunCommands ?? true,
+          terminal: createdSplitTerm,
+        });
     }
   }
   await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
   //we run the actual commands in parallel
   commandsToRunInTerms.forEach(async (el) => {
-    await runCommands(el.commands, el.terminal);
+    await runCommands(el.commands, el.terminal, el.shouldRunCommands);
   });
 }
 
-async function runCommands(commands: string[], terminal: vscode.Terminal) {
+async function runCommands(
+  commands: string[],
+  terminal: vscode.Terminal,
+  shouldRunCommands: boolean = true
+) {
   for (let j = 0; j < commands?.length; j++) {
-    const command = commands[j];
-    terminal.sendText(command);
+    const command = commands[j] + (shouldRunCommands ? "" : ";"); //add semicolon so all commands can run properly after user presses enter
+    terminal.sendText(command, shouldRunCommands);
   }
 }
 

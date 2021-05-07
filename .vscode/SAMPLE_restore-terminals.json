@@ -23,7 +23,8 @@
       "splitTerminals": [
         {
           "name": "build & e2e",
-          "commands": ["npm run eslint", "npm run build", "npm run e2e"]
+          "commands": ["npm run eslint", "npm run build", "npm run e2e"],
+          "shouldRunCommands": false
         },
         {
           "name": "worker",

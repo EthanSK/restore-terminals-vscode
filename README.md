@@ -28,7 +28,8 @@ Simply configure your VSCode settings JSON file to look something like this:
       "splitTerminals": [
         {
           "name": "build & e2e",
-          "commands": ["npm run eslint", "npm run build", "npm run e2e"]
+          "commands": ["npm run eslint", "npm run build", "npm run e2e"],
+          "shouldRunCommands": false
         },
         {
           "name": "worker",
@@ -54,6 +55,8 @@ If you find the extension glitching out, try increasing the `restoreTerminals.ar
 If you do not want this extension to close the currently open terminal windows, you can simply set `restoreTerminals.keepExistingTerminalsOpen` to `true`.
 
 If you do not want it to restore terminals on VSCode startup, but instead only run when you trigger it manually from the command palette, then set `restoreTerminals.runOnStartup` to `false`.
+
+If you don't want the commands to actually run, just be pasted in the terminal, then set `shouldRunCommands` to `false` in each `splitTerminals` object.
 
 If you don't like using split terminals, then just provide one object in each split terminal array, which should be the intuitive thing to do.
 
