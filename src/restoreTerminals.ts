@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { delay } from "./utils";
-import { Configuration, TerminalConfig, TerminalWindow } from "./model";
+import { Configuration } from "./model";
 
 const DEFAULT_ARTIFICAL_DELAY = 300;
 const SPLIT_TERM_CHECK_DELAY = 100;
@@ -17,6 +17,22 @@ export default async function restoreTerminals(configuration: Configuration) {
   if (!terminalWindows) {
     // vscode.window.showInformationMessage("No terminal window configuration provided to restore terminals with.") //this might be annoying
     return;
+  }
+
+  const integratedTerminalConfig = vscode.workspace.getConfiguration(
+    "terminal.integrated"
+  );
+  const origSplitCwd = integratedTerminalConfig.inspect("splitCwd")
+    ?.workspaceValue;
+  let updatedSplitCwd = false;
+
+  if (integratedTerminalConfig.get("splitCwd") === "workspaceRoot") {
+    updatedSplitCwd = true;
+    await integratedTerminalConfig.update(
+      "splitCwd",
+      "initial",
+      vscode.ConfigurationTarget.Workspace
+    );
   }
 
   if (vscode.window.activeTerminal && !keepExistingTerminalsOpen) {
@@ -41,7 +57,7 @@ export default async function restoreTerminals(configuration: Configuration) {
     }
     const term = vscode.window.createTerminal({
       name: terminalWindow.splitTerminals[0]?.name,
-      //  cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
+      cwd: terminalWindow.splitTerminals[0]?.cwd,
     });
     term.show();
     await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
@@ -57,7 +73,10 @@ export default async function restoreTerminals(configuration: Configuration) {
     }
     for (let i = 1; i < terminalWindow.splitTerminals.length; i++) {
       const splitTerminal = terminalWindow.splitTerminals[i];
-      const createdSplitTerm = await createNewSplitTerminal(splitTerminal.name);
+      const createdSplitTerm = await createNewSplitTerminal(
+        splitTerminal.name,
+        splitTerminal.cwd
+      );
       const { commands, shouldRunCommands } = splitTerminal;
       commands &&
         commandsToRunInTerms.push({
@@ -72,6 +91,10 @@ export default async function restoreTerminals(configuration: Configuration) {
   commandsToRunInTerms.forEach(async (el) => {
     await runCommands(el.commands, el.terminal, el.shouldRunCommands);
   });
+
+  if (updatedSplitCwd) {
+    await integratedTerminalConfig.update("splitCwd", origSplitCwd);
+  }
 }
 
 async function runCommands(
@@ -86,7 +109,8 @@ async function runCommands(
 }
 
 async function createNewSplitTerminal(
-  name: string | undefined
+  name: string | undefined,
+  cwd?: string
 ): Promise<vscode.Terminal> {
   return new Promise(async (resolve, reject) => {
     const numTermsBefore = vscode.window.terminals.length;
@@ -107,7 +131,28 @@ async function createNewSplitTerminal(
         break;
       }
       if (numTermsNow > numTermsBefore) {
-        resolve(vscode.window.terminals[numTermsNow - 1]);
+        const newTerm = vscode.window.terminals[numTermsNow - 1];
+
+        if (cwd) {
+          return vscode.workspace.fs.readDirectory(vscode.Uri.file(cwd)).then(
+            (data) => {
+              newTerm.sendText(`cd ${cwd}`, true);
+              return newTerm;
+            },
+            (err) => {
+              let errorMessage = err.message;
+
+              if (err?.code === "FileNotFound") {
+                errorMessage = `The terminal process failed to launch: Starting directory (cwd) "${cwd}" does not exist.`;
+              }
+
+              vscode.window.showErrorMessage(errorMessage);
+              newTerm.dispose();
+            }
+          );
+        }
+
+        resolve(newTerm);
         break; //we know the terminal has now been split
       } else {
         await delay(SPLIT_TERM_CHECK_DELAY);
