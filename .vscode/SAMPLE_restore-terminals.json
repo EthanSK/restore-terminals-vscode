@@ -7,11 +7,13 @@
       "splitTerminals": [
         {
           "name": "server",
-          "commands": ["npm i", "npm run dev"]
+          "commands": ["npm i", "npm run dev"],
+          "cwd": "/home/user/server"
         },
         {
           "name": "client",
-          "commands": ["npm run dev:client"]
+          "commands": ["npm run dev:client"],
+          "cwd": "/home/user/client"
         },
         {
           "name": "test",
