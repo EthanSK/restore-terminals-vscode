@@ -39,37 +39,11 @@ export default async function restoreTerminals(configuration: Configuration) {
       // vscode.window.showInformationMessage("No split terminal configuration provided to restore terminals with.") //this might be annoying
       return;
     }
-
-    let term!: vscode.Terminal;
-    let name = terminalWindow.splitTerminals[0]?.name;
-    if (terminalWindow.profile) {
-      let profileTerm = await vscode.commands.executeCommand(
-        "workbench.action.terminal.newWithProfile",
-        {
-          name: name,
-          profileName: terminalWindow.profile,
-        }
-      );
-      if (profileTerm != undefined) {
-        term = profileTerm as vscode.Terminal;
-      }
-
-      if (name) {
-        await vscode.commands.executeCommand(
-          "workbench.action.terminal.renameWithArg",
-          {
-            name,
-          }
-        );
-      }
-    } else {
-      term = vscode.window.createTerminal({
-        name: name,
-        //  cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
-      });
-      term.show();
-    }
-
+    const term = vscode.window.createTerminal({
+      name: terminalWindow.splitTerminals[0]?.name,
+      //  cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
+    });
+    term.show();
     await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
     //the first terminal split is already created from when we called createTerminal
     if (terminalWindow.splitTerminals.length > 0) {

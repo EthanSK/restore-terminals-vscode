@@ -25,7 +25,6 @@ Simply configure your VSCode settings JSON file to look something like this:
       ]
     },
     {
-      "profile": "Git Bash"
       "splitTerminals": [
         {
           "name": "build & e2e",
