@@ -6,6 +6,7 @@ export interface TerminalConfig {
 
 export interface TerminalWindow {
   splitTerminals?: TerminalConfig[];
+  profile?: string;
 }
 
 export interface Configuration {
