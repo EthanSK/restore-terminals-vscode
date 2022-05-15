@@ -1,12 +1,12 @@
 export enum TerminalColor {
-  "terminal.ansiBlack",
-  "terminal.ansiRed",
-  "terminal.ansiGreen",
-  "terminal.ansiYellow",
-  "terminal.ansiBlue",
-  "terminal.ansiMagenta",
-  "terminal.ansiCyan",
-  "terminal.ansiWhite",
+  "black" = "terminal.ansiBlack",
+  "red" = "terminal.ansiRed",
+  "green" = "terminal.ansiGreen",
+  "yellow" = "terminal.ansiYellow",
+  "blue" = "terminal.ansiBlue",
+  "magenta" = "terminal.ansiMagenta",
+  "cyan" = "terminal.ansiCyan",
+  "white" = "terminal.ansiWhite",
 }
 
 export interface TerminalConfig {

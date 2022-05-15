@@ -13,7 +13,7 @@ Simply configure your VSCode settings JSON file to look something like this:
         {
           "name": "server",
           "commands": ["npm i", "npm run dev"],
-          "color": "terminal.ansiRed"
+          "color": "red"
         },
         {
           "name": "client",

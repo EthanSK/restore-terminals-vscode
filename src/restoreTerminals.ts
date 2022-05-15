@@ -1,6 +1,11 @@
 import * as vscode from "vscode";
 import { delay } from "./utils";
-import { Configuration, TerminalConfig, TerminalWindow } from "./model";
+import {
+  Configuration,
+  TerminalColor,
+  TerminalConfig,
+  TerminalWindow,
+} from "./model";
 
 const DEFAULT_ARTIFICAL_DELAY = 300;
 const SPLIT_TERM_CHECK_DELAY = 100;
@@ -63,11 +68,15 @@ export default async function restoreTerminals(configuration: Configuration) {
         );
       }
     } else {
-      const color = terminalWindow.splitTerminals[0]?.color;
+      let color = TerminalColor.white;
+
+      if (terminalWindow.splitTerminals[0]?.color) {
+        color = TerminalColor[terminalWindow.splitTerminals[0].color];
+      }
 
       term = vscode.window.createTerminal({
         name: name,
-        color: new vscode.ThemeColor(color ?? "terminal.ansiWhite"),
+        color: new vscode.ThemeColor(color),
         //  cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
       });
       term.show();
