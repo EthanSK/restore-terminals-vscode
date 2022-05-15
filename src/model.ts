@@ -1,6 +1,18 @@
+export enum TerminalColor {
+  "terminal.ansiBlack",
+  "terminal.ansiRed",
+  "terminal.ansiGreen",
+  "terminal.ansiYellow",
+  "terminal.ansiBlue",
+  "terminal.ansiMagenta",
+  "terminal.ansiCyan",
+  "terminal.ansiWhite",
+}
+
 export interface TerminalConfig {
   commands?: string[];
   name?: string;
+  color?: keyof typeof TerminalColor;
   shouldRunCommands?: boolean; //whether to actually run the commands, or just paste them in
 }
 

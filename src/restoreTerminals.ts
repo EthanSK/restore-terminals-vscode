@@ -63,8 +63,11 @@ export default async function restoreTerminals(configuration: Configuration) {
         );
       }
     } else {
+      const color = terminalWindow.splitTerminals[0]?.color;
+
       term = vscode.window.createTerminal({
         name: name,
+        color: new vscode.ThemeColor(color ?? "terminal.ansiWhite"),
         //  cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
       });
       term.show();

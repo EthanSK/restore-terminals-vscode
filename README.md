@@ -6,13 +6,14 @@ Automatically spawn integrated terminal windows and split terminals, and run any
 
 Simply configure your VSCode settings JSON file to look something like this:
 
-```
+```json
  "restoreTerminals.terminals": [
     {
       "splitTerminals": [
         {
           "name": "server",
-          "commands": ["npm i", "npm run dev"]
+          "commands": ["npm i", "npm run dev"],
+          "color": "terminal.ansiRed"
         },
         {
           "name": "client",
@@ -60,6 +61,8 @@ If you do not want it to restore terminals on VSCode startup, but instead only r
 If you don't want the commands to actually run, just be pasted in the terminal, then set `shouldRunCommands` to `false` in each `splitTerminals` object.
 
 If you don't like using split terminals, then just provide one object in each split terminal array, which should be the intuitive thing to do.
+
+Color is not currently supported for split terminals. Only the first terminal will have the color.
 
 Contributions to the [code](https://github.com/EthanSK/restore-terminals-vscode) are very welcome and much appreciated!
 
