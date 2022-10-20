@@ -42,11 +42,14 @@ export default async function restoreTerminals(configuration: Configuration) {
 
     let term!: vscode.Terminal;
     let name = terminalWindow.splitTerminals[0]?.name;
+    let icon = terminalWindow.splitTerminals[0]?.icon;
+    let color = terminalWindow.splitTerminals[0]?.color;
     if (terminalWindow.profile) {
       let profileTerm = await vscode.commands.executeCommand(
         "workbench.action.terminal.newWithProfile",
         {
           name: name,
+          icon: icon ?? "terminal",
           profileName: terminalWindow.profile,
         }
       );
@@ -65,6 +68,7 @@ export default async function restoreTerminals(configuration: Configuration) {
     } else {
       term = vscode.window.createTerminal({
         name: name,
+        iconPath: new vscode.ThemeIcon(icon ?? "terminal"),
         //  cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
       });
       term.show();
@@ -83,7 +87,10 @@ export default async function restoreTerminals(configuration: Configuration) {
     }
     for (let i = 1; i < terminalWindow.splitTerminals.length; i++) {
       const splitTerminal = terminalWindow.splitTerminals[i];
-      const createdSplitTerm = await createNewSplitTerminal(splitTerminal.name);
+      const createdSplitTerm = await createNewSplitTerminal(
+        splitTerminal.name,
+        splitTerminal.icon
+      );
       const { commands, shouldRunCommands } = splitTerminal;
       commands &&
         commandsToRunInTerms.push({
@@ -112,7 +119,8 @@ async function runCommands(
 }
 
 async function createNewSplitTerminal(
-  name: string | undefined
+  name: string | undefined,
+  icon: string | undefined
 ): Promise<vscode.Terminal> {
   return new Promise(async (resolve, reject) => {
     const numTermsBefore = vscode.window.terminals.length;
@@ -122,6 +130,7 @@ async function createNewSplitTerminal(
         "workbench.action.terminal.renameWithArg",
         {
           name,
+          icon,
         }
       );
     }

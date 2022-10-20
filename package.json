@@ -2,7 +2,7 @@
   "name": "restore-terminals",
   "displayName": "Restore Terminals",
   "description": "Spawn integrated terminals and run commands on startup",
-  "version": "1.1.7",
+  "version": "1.2.7",
   "publisher": "EthanSK",
   "icon": "icon.png",
   "repository": {
@@ -59,6 +59,10 @@
                     "name": {
                       "type": "string",
                       "description": "The name to give the terminal window"
+                    },
+                    "icon": {
+                      "type": "string",
+                      "description": "The icon to give the terminal window"
                     },
                     "commands": {
                       "type": "array",
