@@ -1,3 +1,5 @@
+import type { TerminalOptions } from "vscode";
+
 export enum TerminalColor {
   "black" = "terminal.ansiBlack",
   "red" = "terminal.ansiRed",
@@ -12,6 +14,7 @@ export enum TerminalColor {
 export interface TerminalConfig {
   commands?: string[];
   name?: string;
+  icon?: string;
   color?: keyof typeof TerminalColor;
   shouldRunCommands?: boolean; //whether to actually run the commands, or just paste them in
 }
