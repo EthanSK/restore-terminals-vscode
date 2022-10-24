@@ -42,18 +42,14 @@ export default async function restoreTerminals(configuration: Configuration) {
 
     let term!: vscode.Terminal;
     let name = terminalWindow.splitTerminals[0]?.name;
-    let icon = terminalWindow.splitTerminals[0]?.icon;
-    let color = terminalWindow.splitTerminals[0]?.color;
 
     term = vscode.window.createTerminal({
       name: name,
-      iconPath: new vscode.ThemeIcon(icon ?? "terminal"),
       // cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
     });
 
     term.show();
 
-    await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
     //the first terminal split is already created from when we called createTerminal
     if (terminalWindow.splitTerminals.length > 0) {
       const { commands, shouldRunCommands } = terminalWindow.splitTerminals[0];
@@ -64,12 +60,12 @@ export default async function restoreTerminals(configuration: Configuration) {
           terminal: term,
         });
     }
+    await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
+
     for (let i = 1; i < terminalWindow.splitTerminals.length; i++) {
       const splitTerminal = terminalWindow.splitTerminals[i];
-      const createdSplitTerm = await createNewSplitTerminal(
-        splitTerminal.name,
-        splitTerminal.icon
-      );
+      const createdSplitTerm = await createNewSplitTerminal(splitTerminal.name);
+
       const { commands, shouldRunCommands } = splitTerminal;
       commands &&
         commandsToRunInTerms.push({
@@ -77,6 +73,7 @@ export default async function restoreTerminals(configuration: Configuration) {
           shouldRunCommands: shouldRunCommands ?? true,
           terminal: createdSplitTerm,
         });
+      await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
     }
   }
   await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
@@ -98,8 +95,7 @@ async function runCommands(
 }
 
 async function createNewSplitTerminal(
-  name: string | undefined,
-  icon: string | undefined
+  name: string | undefined
 ): Promise<vscode.Terminal> {
   return new Promise(async (resolve, reject) => {
     const numTermsBefore = vscode.window.terminals.length;
@@ -109,7 +105,6 @@ async function createNewSplitTerminal(
         "workbench.action.terminal.renameWithArg",
         {
           name,
-          icon,
         }
       );
     }

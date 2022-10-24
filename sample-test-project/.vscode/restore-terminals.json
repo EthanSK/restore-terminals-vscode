@@ -7,8 +7,7 @@
       "splitTerminals": [
         {
           "name": "server",
-          "commands": ["npm i", "npm run dev"],
-          "icon": "notebook-open-as-text"
+          "commands": ["npm i", "npm run dev"]
         },
         {
           "name": "client",
@@ -32,7 +31,6 @@
           "shouldRunCommands": false
         },
         {
-          "icon": "output-view-icon",
           "name": "worker",
           "commands": ["npm-run-all --parallel redis tsc-watch-start worker"]
         }

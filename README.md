@@ -60,4 +60,8 @@ If you don't want the commands to actually run, just be pasted in the terminal, 
 
 If you don't like using split terminals, then just provide one object in each split terminal array, which should be the intuitive thing to do.
 
+### Contributions
+
+Unless you can 100% prove your contribution fully works with a video, and the code is clean and makes sense, I am no longer accepting contributions. Too many contributions have been submitted that don't work, and the VSCode official API doesn't work in many cases, and this extension already uses a couple hacks to get around it.
+
 **Enjoy!**
