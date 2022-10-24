@@ -10,7 +10,7 @@
     "url": "https://github.com/EthanSK/restore-terminals-vscode"
   },
   "engines": {
-    "vscode": "^1.46.0"
+    "vscode": "^1.72.0"
   },
   "categories": [
     "Other"
