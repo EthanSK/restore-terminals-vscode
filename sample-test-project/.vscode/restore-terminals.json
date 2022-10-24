@@ -1,5 +1,5 @@
 {
-  "artificialDelayMilliseconds": 300,
+  "artificialDelayMilliseconds": 700,
   "keepExistingTerminalsOpen": false,
   "runOnStartup": true,
   "terminals": [
@@ -7,7 +7,8 @@
       "splitTerminals": [
         {
           "name": "server",
-          "commands": ["npm i", "npm run dev"]
+          "commands": ["npm i", "npm run dev"],
+          "icon": "notebook-open-as-text"
         },
         {
           "name": "client",
@@ -23,10 +24,15 @@
       "splitTerminals": [
         {
           "name": "build & e2e",
-          "commands": ["npm run eslint", "npm run build", "npm run e2e"],
+          "commands": [
+            "eslint --ext .tsx --ext .ts lib/",
+            "npm run build",
+            "npm run e2e"
+          ],
           "shouldRunCommands": false
         },
         {
+          "icon": "output-view-icon",
           "name": "worker",
           "commands": ["npm-run-all --parallel redis tsc-watch-start worker"]
         }
