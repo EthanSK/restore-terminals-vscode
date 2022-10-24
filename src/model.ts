@@ -2,6 +2,7 @@ import type { TerminalOptions } from "vscode";
 
 export interface TerminalConfig {
   commands?: string[];
+  profile?: string;
   name?: string;
   icon?: string;
   color?: string;
