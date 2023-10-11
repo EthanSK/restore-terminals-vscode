@@ -4,15 +4,21 @@ import { TextDecoder } from "text-encoding";
 import * as path from "path";
 
 export async function getConfiguration(): Promise<Configuration> {
-  const keepExistingTerminalsOpen: boolean | undefined = vscode.workspace
+  const keepExistingTerminalsOpen:
+    | boolean
+    | undefined = vscode.workspace
     .getConfiguration("restoreTerminals")
     .get("keepExistingTerminalsOpen");
 
-  const artificialDelayMilliseconds: number | undefined = vscode.workspace
+  const artificialDelayMilliseconds:
+    | number
+    | undefined = vscode.workspace
     .getConfiguration("restoreTerminals")
     .get("artificialDelayMilliseconds");
 
-  const terminalWindows: TerminalWindow[] | undefined = vscode.workspace
+  const terminalWindows:
+    | TerminalWindow[]
+    | undefined = vscode.workspace
     .getConfiguration("restoreTerminals")
     .get("terminals");
 
@@ -51,7 +57,7 @@ async function getConfigurationFromJsonFile(): Promise<
       const fileDataString = new TextDecoder("utf-8").decode(fileData);
       configData = JSON.parse(fileDataString);
     } catch (error) {
-      console.log("No config in workspace", folder, error.Message);
+      console.log("No config in workspace", folder, error);
     }
   }
   if (!configData) return undefined;

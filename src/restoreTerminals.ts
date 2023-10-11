@@ -42,39 +42,14 @@ export default async function restoreTerminals(configuration: Configuration) {
 
     let term!: vscode.Terminal;
     let name = terminalWindow.splitTerminals[0]?.name;
-    let icon = terminalWindow.splitTerminals[0]?.icon;
-    let color = terminalWindow.splitTerminals[0]?.color;
-    if (terminalWindow.profile) {
-      let profileTerm = await vscode.commands.executeCommand(
-        "workbench.action.terminal.newWithProfile",
-        {
-          name: name,
-          icon: icon ?? "terminal",
-          profileName: terminalWindow.profile,
-        }
-      );
-      if (profileTerm != undefined) {
-        term = profileTerm as vscode.Terminal;
-      }
 
-      if (name) {
-        await vscode.commands.executeCommand(
-          "workbench.action.terminal.renameWithArg",
-          {
-            name,
-          }
-        );
-      }
-    } else {
-      term = vscode.window.createTerminal({
-        name: name,
-        iconPath: new vscode.ThemeIcon(icon ?? "terminal"),
-        //  cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
-      });
-      term.show();
-    }
+    term = vscode.window.createTerminal({
+      name: name,
+      // cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
+    });
 
-    await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
+    term.show();
+
     //the first terminal split is already created from when we called createTerminal
     if (terminalWindow.splitTerminals.length > 0) {
       const { commands, shouldRunCommands } = terminalWindow.splitTerminals[0];
@@ -85,6 +60,8 @@ export default async function restoreTerminals(configuration: Configuration) {
           terminal: term,
         });
     }
+    await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
+
     for (let i = 1; i < terminalWindow.splitTerminals.length; i++) {
       const splitTerminal = terminalWindow.splitTerminals[i];
       const createdSplitTerm = await createNewSplitTerminal(
@@ -99,6 +76,7 @@ export default async function restoreTerminals(configuration: Configuration) {
           shouldRunCommands: shouldRunCommands ?? true,
           terminal: createdSplitTerm,
         });
+      await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
     }
   }
   await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
@@ -139,7 +117,6 @@ async function createNewSplitTerminal(
         "workbench.action.terminal.renameWithArg",
         {
           name,
-          icon,
         }
       );
     }

@@ -25,7 +25,6 @@ Simply configure your VSCode settings JSON file to look something like this:
       ]
     },
     {
-      "profile": "Git Bash"
       "splitTerminals": [
         {
           "name": "build & e2e",
@@ -43,7 +42,7 @@ Simply configure your VSCode settings JSON file to look something like this:
 
 The outer array represents a integrated VSCode terminal window, and the `splitTerminals` array contains the information about how each terminal window should be split up.
 
-You can also use a custom config file under. The file should be at `.vscode/restore-terminals.json` in any workspace you want. A sample config file is [here](https://github.com/EthanSK/restore-terminals-vscode/blob/master/.vscode/SAMPLE_restore-terminals.json). If this config file is present, Restore Terminals will try and load settings from it first, then use `settings.json` as a fallback.
+You can also use a custom config file under. The file should be at `.vscode/restore-terminals.json` in any workspace you want. A sample config file is [here](https://github.com/EthanSK/restore-terminals-vscode/blob/master/sample-test-project/.vscode/restore-terminals.json). If this config file is present, Restore Terminals will try and load settings from it first, then use `settings.json` as a fallback.
 
 ## Extra info
 
@@ -61,6 +60,8 @@ If you don't want the commands to actually run, just be pasted in the terminal, 
 
 If you don't like using split terminals, then just provide one object in each split terminal array, which should be the intuitive thing to do.
 
-Contributions to the [code](https://github.com/EthanSK/restore-terminals-vscode) are very welcome and much appreciated!
+### Contributions
+
+Unless you can 100% prove your contribution fully works with a video, and the code is clean and makes sense, I am no longer accepting contributions. Too many contributions have been submitted that don't work, and the VSCode official API doesn't work in many cases, and this extension already uses a couple hacks to get around it.
 
 **Enjoy!**
