@@ -13,6 +13,7 @@ export default async function restoreTerminals(configuration: Configuration) {
     artificialDelayMilliseconds,
     terminalWindows,
   } = configuration;
+  let activeWindow = null;
 
   if (!terminalWindows) {
     // vscode.window.showInformationMessage("No terminal window configuration provided to restore terminals with.") //this might be annoying
@@ -75,12 +76,23 @@ export default async function restoreTerminals(configuration: Configuration) {
         });
       await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
     }
+
+    if(terminalWindow.setAsActive && !activeWindow){
+      activeWindow = term;
+    }
   }
   await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
   //we run the actual commands in parallel
   commandsToRunInTerms.forEach(async (el) => {
     await runCommands(el.commands, el.terminal, el.shouldRunCommands);
   });
+
+  //for some reason running a command in the terminal makes it be shown again so this
+  //needs to be ran after all the commands are executed
+  if(activeWindow){
+    activeWindow.show();
+  }
+
 }
 
 async function runCommands(
