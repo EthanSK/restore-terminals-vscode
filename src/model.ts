@@ -13,7 +13,7 @@ export interface TerminalWindow {
 export interface Configuration {
   keepExistingTerminalsOpen?: boolean;
   artificialDelayMilliseconds?: number;
-  terminalWindows?: TerminalWindow[];
+  terminalWindows?: TerminalWindow[] | Map<string, TerminalWindow[]>;
   runOnStartup?: boolean;
 }
 
