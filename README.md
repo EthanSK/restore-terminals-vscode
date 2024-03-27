@@ -40,6 +40,55 @@ Simply configure your VSCode settings JSON file to look something like this:
   ]
 ```
 
+Or named configurations that you can choose between:
+
+```
+ "restoreTerminals.terminals": {
+    "dev": [
+      {
+        "splitTerminals": [
+          {
+            "name": "server",
+            "commands": ["npm i", "npm run dev"]
+          },
+          {
+            "name": "client",
+            "commands": ["npm run dev:client"]
+          }
+        ]
+      },
+      {
+        "splitTerminals": [
+          {
+            "name": "worker",
+            "commands": ["npm-run-all --parallel redis tsc-watch-start worker"]
+          }
+        ]
+      }
+    ],
+    "test": [
+      {
+        "splitTerminals": [
+          {
+            "name": "test",
+            "commands": ["jest --watch"],
+            "shouldRunCommands": false
+          }
+        ],
+      },
+      {
+        "splitTerminals": [
+          {
+            "name": "build & e2e",
+            "commands": ["npm run eslint", "npm run build", "npm run e2e"],
+            "shouldRunCommands": false
+          }
+        ],
+      }
+    ]
+  }
+```
+
 The outer array represents a integrated VSCode terminal window, and the `splitTerminals` array contains the information about how each terminal window should be split up.
 
 You can also use a custom config file under. The file should be at `.vscode/restore-terminals.json` in any workspace you want. A sample config file is [here](https://github.com/EthanSK/restore-terminals-vscode/blob/master/sample-test-project/.vscode/restore-terminals.json). If this config file is present, Restore Terminals will try and load settings from it first, then use `settings.json` as a fallback.
