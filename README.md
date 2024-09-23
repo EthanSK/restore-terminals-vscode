@@ -7,6 +7,7 @@ Automatically spawn integrated terminal windows and split terminals, and run any
 Simply configure your VSCode settings JSON file to look something like this:
 
 ```
+ "restoreTerminals.runOnStartup": true,
  "restoreTerminals.terminals": [
     {
       "splitTerminals": [
