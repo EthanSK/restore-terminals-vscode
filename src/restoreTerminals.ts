@@ -8,7 +8,7 @@ const MAX_TERM_CHECK_ATTEMPTS = 500; //this times SPLIT_TERM_CHECK_DELAY is the 
 
 export default async function restoreTerminals(configuration: Configuration) {
   console.log("restoring terminals", configuration);
-  const {
+  let {
     keepExistingTerminalsOpen,
     artificialDelayMilliseconds,
     terminalWindows,
@@ -16,6 +16,35 @@ export default async function restoreTerminals(configuration: Configuration) {
 
   if (!terminalWindows) {
     // vscode.window.showInformationMessage("No terminal window configuration provided to restore terminals with.") //this might be annoying
+    return;
+  }
+
+  if (!(terminalWindows instanceof Array) && terminalWindows !== null) {
+    terminalWindows = new Map(Object.entries(terminalWindows));
+    if (!terminalWindows.size) {
+      vscode.window.showInformationMessage(
+        "Empty terminal window configuration provided to restore terminals with."
+      ); //this might be annoying
+      return;
+    }
+
+    if (terminalWindows.size > 1) {
+      const picked = await vscode.window.showQuickPick(
+        Array.from(terminalWindows.keys())
+      );
+      if (!picked) {
+        return;
+      }
+      terminalWindows = terminalWindows.get(picked) ?? [];
+    } else {
+      terminalWindows = Array.from(terminalWindows.values())[0];
+    }
+  }
+
+  if (!terminalWindows.length) {
+    vscode.window.showInformationMessage(
+      "Empty terminal window configuration provided to restore terminals with."
+    ); //this might be annoying
     return;
   }
 
