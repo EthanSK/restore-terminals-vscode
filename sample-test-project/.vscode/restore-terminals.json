@@ -1,40 +1,51 @@
 {
-  "artificialDelayMilliseconds": 700,
-  "keepExistingTerminalsOpen": false,
-  "runOnStartup": true,
-  "terminals": [
-    {
-      "splitTerminals": [
+    "artificialDelayMilliseconds": 700,
+    "keepExistingTerminalsOpen": false,
+    "runOnStartup": true,
+    "terminals": [
         {
-          "name": "server",
-          "commands": ["npm i", "npm run dev"]
+            "name": "test",
+            "splitTerminals": [
+                {
+                    "name": "server",
+                    "commands": [
+                        "npm i",
+                        "npm run dev"
+                    ]
+                },
+                {
+                    "name": "client",
+                    "commands": [
+                        "npm run dev:client"
+                    ]
+                },
+                {
+                    "name": "test",
+                    "commands": [
+                        "jest --watch"
+                    ]
+                }
+            ]
         },
         {
-          "name": "client",
-          "commands": ["npm run dev:client"]
-        },
-        {
-          "name": "test",
-          "commands": ["jest --watch"]
+            "name": "test2",
+            "splitTerminals": [
+                {
+                    "name": "build & e2e",
+                    "commands": [
+                        "eslint --ext .tsx --ext .ts lib/",
+                        "npm run build",
+                        "npm run e2e"
+                    ],
+                    "shouldRunCommands": false
+                },
+                {
+                    "name": "worker",
+                    "commands": [
+                        "npm-run-all --parallel redis tsc-watch-start worker"
+                    ]
+                }
+            ]
         }
-      ]
-    },
-    {
-      "splitTerminals": [
-        {
-          "name": "build & e2e",
-          "commands": [
-            "eslint --ext .tsx --ext .ts lib/",
-            "npm run build",
-            "npm run e2e"
-          ],
-          "shouldRunCommands": false
-        },
-        {
-          "name": "worker",
-          "commands": ["npm-run-all --parallel redis tsc-watch-start worker"]
-        }
-      ]
-    }
-  ]
+    ]
 }
