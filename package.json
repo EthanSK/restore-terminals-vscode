@@ -49,40 +49,91 @@
           "description": "If you find restore terminals glitching out, or running some commands in the wrong window, you might want to try increasing this number to further delay the processing of actions. If you find it taking too long to open the terminal windows, you can try reducing this number, but be cautious as if it's too fast it will bug out."
         },
         "restoreTerminals.terminals": {
-          "type": "array",
-          "items": {
-            "properties": {
-              "splitTerminals": {
+          "type": [
+            "array",
+            "object"
+          ],
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
                 "type": "array",
                 "items": {
                   "properties": {
-                    "name": {
-                      "type": "string",
-                      "description": "The name to give the terminal window"
-                    },
-                    "icon": {
-                      "type": "string",
-                      "description": "The icon to give the terminal window"
-                    },
-                    "commands": {
+                    "splitTerminals": {
                       "type": "array",
-                      "description": "The shell commands to execute when this terminal opens.",
                       "items": {
                         "properties": {
-                          "type": "string",
-                          "description": "A shell command to run."
-                        }
+                          "name": {
+                            "type": "string",
+                            "description": "The name to give the terminal window"
+                          },
+                          "icon": {
+                            "type": "string",
+                            "description": "The icon to give the terminal window"
+                          },
+                          "commands": {
+                            "type": "array",
+                            "description": "The shell commands to execute when this terminal opens.",
+                            "items": {
+                              "properties": {
+                                "type": "string",
+                                "description": "A shell command to run."
+                              }
+                            }
+                          },
+                          "shouldRunCommands": {
+                            "type": "boolean",
+                            "description": "Whether to actually run the commands in the terminal, or just paste them there."
+                          }
+                        },
+                        "additionalProperties": false
                       }
-                    },
-                    "shouldRunCommands": {
-                      "type": "boolean",
-                      "description": "Whether to actually run the commands in the terminal, or just paste them there."
                     }
-                  }
+                  },
+                  "additionalProperties": false
                 }
               }
+            },
+            {
+              "type": "array",
+              "items": {
+                "properties": {
+                  "splitTerminals": {
+                    "type": "array",
+                    "items": {
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "The name to give the terminal window"
+                        },
+                        "icon": {
+                          "type": "string",
+                          "description": "The icon to give the terminal window"
+                        },
+                        "commands": {
+                          "type": "array",
+                          "description": "The shell commands to execute when this terminal opens.",
+                          "items": {
+                            "properties": {
+                              "type": "string",
+                              "description": "A shell command to run."
+                            }
+                          }
+                        },
+                        "shouldRunCommands": {
+                          "type": "boolean",
+                          "description": "Whether to actually run the commands in the terminal, or just paste them there."
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "additionalProperties": false
+              }
             }
-          }
+          ]
         }
       }
     }
