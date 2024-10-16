@@ -64,8 +64,11 @@ export default async function restoreTerminals(configuration: Configuration) {
 
     for (let i = 1; i < terminalWindow.splitTerminals.length; i++) {
       const splitTerminal = terminalWindow.splitTerminals[i];
-      const createdSplitTerm = await createNewSplitTerminal(splitTerminal.name);
-
+      const createdSplitTerm = await createNewSplitTerminal(
+        splitTerminal.name,
+        splitTerminal.icon,
+        splitTerminal.profile
+      );
       const { commands, shouldRunCommands } = splitTerminal;
       commands &&
         commandsToRunInTerms.push({
@@ -95,11 +98,20 @@ async function runCommands(
 }
 
 async function createNewSplitTerminal(
-  name: string | undefined
+  profile: string | undefined,
+  name: string | undefined,
+  icon: string | undefined,
 ): Promise<vscode.Terminal> {
   return new Promise(async (resolve, reject) => {
     const numTermsBefore = vscode.window.terminals.length;
     await vscode.commands.executeCommand("workbench.action.terminal.split");
+    if (profile) {
+      await vscode.commands.executeCommand(
+        "workbench.action.terminal.newWithProfile",
+        {
+          profile,
+        });
+    }
     if (name) {
       await vscode.commands.executeCommand(
         "workbench.action.terminal.renameWithArg",
