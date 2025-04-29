@@ -8,6 +8,7 @@ export interface TerminalConfig {
 
 export interface TerminalWindow {
   splitTerminals?: TerminalConfig[];
+  location?: string; // view, editor, or default
 }
 
 export interface Configuration {
