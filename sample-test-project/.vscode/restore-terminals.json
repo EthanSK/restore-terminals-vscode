@@ -17,7 +17,8 @@
           "name": "test",
           "commands": ["jest --watch"]
         }
-      ]
+      ],
+      "location": "view"
     },
     {
       "splitTerminals": [
@@ -34,7 +35,8 @@
           "name": "worker",
           "commands": ["npm-run-all --parallel redis tsc-watch-start worker"]
         }
-      ]
+      ],
+      "location": "view"
     }
   ]
 }

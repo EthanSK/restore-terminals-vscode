@@ -42,9 +42,16 @@ export default async function restoreTerminals(configuration: Configuration) {
 
     let term!: vscode.Terminal;
     let name = terminalWindow.splitTerminals[0]?.name;
+    let location =
+      terminalWindow.location == "view" || terminalWindow.location == "panel"
+        ? vscode.TerminalLocation.Panel
+        : terminalWindow.location == "editor"
+        ? vscode.TerminalLocation.Editor
+        : 0;
 
     term = vscode.window.createTerminal({
       name: name,
+      location: location,
       // cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
     });
 
