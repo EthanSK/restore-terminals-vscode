@@ -42,10 +42,18 @@ export default async function restoreTerminals(configuration: Configuration) {
 
     let term!: vscode.Terminal;
     let name = terminalWindow.splitTerminals[0]?.name;
+    let location =
+      terminalWindow.location == "view" || terminalWindow.location == "panel"
+        ? vscode.TerminalLocation.Panel
+        : terminalWindow.location == "editor"
+        ? vscode.TerminalLocation.Editor
+        : 0;
+    let path = terminalWindow.splitTerminals[0]?.path;
 
     term = vscode.window.createTerminal({
       name: name,
-      // cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
+      location: location,
+      cwd: path,
     });
 
     term.show();
@@ -60,23 +68,33 @@ export default async function restoreTerminals(configuration: Configuration) {
           terminal: term,
         });
     }
-    await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
 
     for (let i = 1; i < terminalWindow.splitTerminals.length; i++) {
       const splitTerminal = terminalWindow.splitTerminals[i];
-      const createdSplitTerm = await createNewSplitTerminal(splitTerminal.name);
+
+      let name = splitTerminal.name;
+      let path = splitTerminal.path;
+
+      term = vscode.window.createTerminal({
+        name: name,
+        location: {
+          parentTerminal: term,
+        },
+        cwd: path,
+      });
 
       const { commands, shouldRunCommands } = splitTerminal;
       commands &&
         commandsToRunInTerms.push({
           commands,
           shouldRunCommands: shouldRunCommands ?? true,
-          terminal: createdSplitTerm,
+          terminal: term,
         });
-      await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
     }
+
+    await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
   }
-  await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
+
   //we run the actual commands in parallel
   commandsToRunInTerms.forEach(async (el) => {
     await runCommands(el.commands, el.terminal, el.shouldRunCommands);
@@ -92,36 +110,4 @@ async function runCommands(
     const command = commands[j] + (shouldRunCommands ? "" : ";"); //add semicolon so all commands can run properly after user presses enter
     terminal.sendText(command, shouldRunCommands);
   }
-}
-
-async function createNewSplitTerminal(
-  name: string | undefined
-): Promise<vscode.Terminal> {
-  return new Promise(async (resolve, reject) => {
-    const numTermsBefore = vscode.window.terminals.length;
-    await vscode.commands.executeCommand("workbench.action.terminal.split");
-    if (name) {
-      await vscode.commands.executeCommand(
-        "workbench.action.terminal.renameWithArg",
-        {
-          name,
-        }
-      );
-    }
-    let attemptCount = 0;
-    while (true) {
-      const numTermsNow = vscode.window.terminals?.length;
-      if (attemptCount > MAX_TERM_CHECK_ATTEMPTS) {
-        reject();
-        break;
-      }
-      if (numTermsNow > numTermsBefore) {
-        resolve(vscode.window.terminals[numTermsNow - 1]);
-        break; //we know the terminal has now been split
-      } else {
-        await delay(SPLIT_TERM_CHECK_DELAY);
-        attemptCount++;
-      }
-    }
-  });
 }

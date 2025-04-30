@@ -1,6 +1,7 @@
 import type { TerminalOptions } from "vscode";
 
 export interface TerminalConfig {
+  path?: string; // CWD of the new terminal
   commands?: string[];
   name?: string;
   shouldRunCommands?: boolean; //whether to actually run the commands, or just paste them in
@@ -8,6 +9,7 @@ export interface TerminalConfig {
 
 export interface TerminalWindow {
   splitTerminals?: TerminalConfig[];
+  location?: string; // view, editor, or default
 }
 
 export interface Configuration {
