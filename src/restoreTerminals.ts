@@ -48,11 +48,12 @@ export default async function restoreTerminals(configuration: Configuration) {
         : terminalWindow.location == "editor"
         ? vscode.TerminalLocation.Editor
         : 0;
+    let path = terminalWindow.splitTerminals[0]?.path;
 
     term = vscode.window.createTerminal({
       name: name,
       location: location,
-      // cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
+      cwd: path,
     });
 
     term.show();
@@ -72,13 +73,14 @@ export default async function restoreTerminals(configuration: Configuration) {
       const splitTerminal = terminalWindow.splitTerminals[i];
 
       let name = splitTerminal.name;
+      let path = splitTerminal.path;
 
       term = vscode.window.createTerminal({
         name: name,
         location: {
           parentTerminal: term,
         },
-        // cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
+        cwd: path,
       });
 
       const { commands, shouldRunCommands } = splitTerminal;
