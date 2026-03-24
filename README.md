@@ -2,6 +2,8 @@
 
 Automatically spawn integrated terminal windows and split terminals, and run any shell commands when VSCode starts up!
 
+**Requires VS Code 1.75.0 or higher.**
+
 ## How to use
 
 Simply configure your VSCode settings JSON file to look something like this:
@@ -13,6 +15,8 @@ Simply configure your VSCode settings JSON file to look something like this:
       "splitTerminals": [
         {
           "name": "server",
+          "color": "terminal.ansiGreen",
+          "icon": "server",
           "commands": ["npm i", "npm run dev"]
         },
         {
@@ -29,6 +33,8 @@ Simply configure your VSCode settings JSON file to look something like this:
       "splitTerminals": [
         {
           "name": "build & e2e",
+          "color": "terminal.ansiYellow",
+          "icon": "tools",
           "commands": ["npm run eslint", "npm run build", "npm run e2e"],
           "shouldRunCommands": false
         },
@@ -42,6 +48,25 @@ Simply configure your VSCode settings JSON file to look something like this:
 ```
 
 The outer array represents a integrated VSCode terminal window, and the `splitTerminals` array contains the information about how each terminal window should be split up.
+
+## Terminal Colors and Icons
+
+You can customize the appearance of your terminals by setting `color` and `icon` properties. These work for standalone terminals. For split terminals, `color` and `icon` are only applied to the first terminal in the group.
+
+### Available Colors
+
+- `terminal.ansiBlack`, `terminal.ansiRed`, `terminal.ansiGreen`, `terminal.ansiYellow`
+- `terminal.ansiBlue`, `terminal.ansiMagenta`, `terminal.ansiCyan`, `terminal.ansiWhite`
+
+### Available Icons
+
+You can use any icon from VS Code's built-in icons. Some popular ones:
+
+- `terminal`, `server`, `database`, `cloud`, `globe`
+- `rocket`, `flame`, `bug`, `beaker`, `zap`
+- `tools`, `gear`, `wrench`, `play`, `debug`
+
+For a full list of available icons, see the [VS Code Icon Reference](https://code.visualstudio.com/api/references/icons-in-labels).
 
 You can also use a custom config file under. The file should be at `.vscode/restore-terminals.json` in any workspace you want. A sample config file is [here](https://github.com/EthanSK/restore-terminals-vscode/blob/master/sample-test-project/.vscode/restore-terminals.json). If this config file is present, Restore Terminals will try and load settings from it first, then use `settings.json` as a fallback.
 

@@ -7,14 +7,20 @@
       "splitTerminals": [
         {
           "name": "server",
+          "color": "terminal.ansiGreen",
+          "icon": "server",
           "commands": ["npm i", "npm run dev"]
         },
         {
           "name": "client",
+          "color": "terminal.ansiCyan",
+          "icon": "globe",
           "commands": ["npm run dev:client"]
         },
         {
           "name": "test",
+          "color": "terminal.ansiYellow",
+          "icon": "beaker",
           "commands": ["jest --watch"]
         }
       ]
@@ -23,6 +29,8 @@
       "splitTerminals": [
         {
           "name": "build & e2e",
+          "color": "terminal.ansiMagenta",
+          "icon": "tools",
           "commands": [
             "eslint --ext .tsx --ext .ts lib/",
             "npm run build",
@@ -32,7 +40,22 @@
         },
         {
           "name": "worker",
+          "color": "terminal.ansiRed",
+          "icon": "flame",
           "commands": ["npm-run-all --parallel redis tsc-watch-start worker"]
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "single terminal",
+          "color": "terminal.ansiBlue",
+          "icon": "rocket",
+          "commands": [
+            "echo 'Hello world'"
+          ],
+          "shouldRunCommands": false
         }
       ]
     }

@@ -13,11 +13,11 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const config = await getConfiguration(); //mast be done here so json config works for runOnStartup
 
-  let disposable = vscode.commands.registerCommand(
+  const disposable = vscode.commands.registerCommand(
     "restore-terminals.restoreTerminals",
     async () => {
       restoreTerminals(await getConfiguration()); //get fresh config here
-    }
+    },
   );
 
   context.subscriptions.push(disposable);

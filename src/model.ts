@@ -1,9 +1,9 @@
-import type { TerminalOptions } from "vscode";
-
 export interface TerminalConfig {
   commands?: string[];
   name?: string;
   shouldRunCommands?: boolean; //whether to actually run the commands, or just paste them in
+  color?: string;
+  icon?: string;
 }
 
 export interface TerminalWindow {
