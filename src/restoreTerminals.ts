@@ -1,36 +1,10 @@
 import * as vscode from "vscode";
-import * as path from "path";
 import { delay } from "./utils";
-import { Configuration, TerminalConfig, TerminalWindow } from "./model";
+import { Configuration } from "./model";
 
 const DEFAULT_ARTIFICAL_DELAY = 300;
 const SPLIT_TERM_CHECK_DELAY = 100;
 const MAX_TERM_CHECK_ATTEMPTS = 500; //this times SPLIT_TERM_CHECK_DELAY is the timeout
-
-function resolveCwd(
-  relativeCwd: string | undefined,
-  workspaceFolderPath: string | undefined
-): string | undefined {
-  if (!relativeCwd && !workspaceFolderPath) {
-    return undefined;
-  }
-
-  let basePath: string | undefined = workspaceFolderPath;
-
-  if (!basePath) {
-    const workspaceFolders = vscode.workspace.workspaceFolders;
-    if (!workspaceFolders || workspaceFolders.length === 0) {
-      return undefined;
-    }
-    basePath = workspaceFolders[0].uri.fsPath;
-  }
-
-  if (!relativeCwd) {
-    return basePath;
-  }
-
-  return path.join(basePath, relativeCwd);
-}
 
 export default async function restoreTerminals(configuration: Configuration) {
   console.log("restoring terminals", configuration);
@@ -69,14 +43,10 @@ export default async function restoreTerminals(configuration: Configuration) {
     let term!: vscode.Terminal;
     const firstTerminalConfig = terminalWindow.splitTerminals[0];
     let name = firstTerminalConfig?.name;
-    const firstCwd = resolveCwd(
-      firstTerminalConfig?.cwd,
-      terminalWindow.workspaceFolderPath
-    );
 
     term = vscode.window.createTerminal({
       name: name,
-      cwd: firstCwd,
+      cwd: terminalWindow.workspaceFolderPath,
     });
 
     term.show();
@@ -97,13 +67,14 @@ export default async function restoreTerminals(configuration: Configuration) {
       const splitTerminal = terminalWindow.splitTerminals[i];
       const createdSplitTerm = await createNewSplitTerminal(splitTerminal.name);
 
-      const { commands, shouldRunCommands, cwd } = splitTerminal;
-      const splitCwd = resolveCwd(cwd, terminalWindow.workspaceFolderPath);
+      const { commands, shouldRunCommands } = splitTerminal;
 
-      // For split terminals, we need to send a cd command since we can't set cwd directly
-      if (splitCwd) {
-        const cdCommand = `cd "${splitCwd}"`;
-        createdSplitTerm.sendText(cdCommand, true);
+      // Split terminals inherit the parent cwd; cd into the config's workspace folder when needed
+      if (terminalWindow.workspaceFolderPath) {
+        createdSplitTerm.sendText(
+          `cd "${terminalWindow.workspaceFolderPath}"`,
+          true
+        );
         await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
       }
 
