@@ -1,10 +1,36 @@
 import * as vscode from "vscode";
+import * as path from "path";
 import { delay } from "./utils";
 import { Configuration, TerminalConfig, TerminalWindow } from "./model";
 
 const DEFAULT_ARTIFICAL_DELAY = 300;
 const SPLIT_TERM_CHECK_DELAY = 100;
 const MAX_TERM_CHECK_ATTEMPTS = 500; //this times SPLIT_TERM_CHECK_DELAY is the timeout
+
+function resolveCwd(
+  relativeCwd: string | undefined,
+  workspaceFolderPath: string | undefined
+): string | undefined {
+  if (!relativeCwd && !workspaceFolderPath) {
+    return undefined;
+  }
+
+  let basePath: string | undefined = workspaceFolderPath;
+
+  if (!basePath) {
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (!workspaceFolders || workspaceFolders.length === 0) {
+      return undefined;
+    }
+    basePath = workspaceFolders[0].uri.fsPath;
+  }
+
+  if (!relativeCwd) {
+    return basePath;
+  }
+
+  return path.join(basePath, relativeCwd);
+}
 
 export default async function restoreTerminals(configuration: Configuration) {
   console.log("restoring terminals", configuration);
@@ -41,18 +67,23 @@ export default async function restoreTerminals(configuration: Configuration) {
     }
 
     let term!: vscode.Terminal;
-    let name = terminalWindow.splitTerminals[0]?.name;
+    const firstTerminalConfig = terminalWindow.splitTerminals[0];
+    let name = firstTerminalConfig?.name;
+    const firstCwd = resolveCwd(
+      firstTerminalConfig?.cwd,
+      terminalWindow.workspaceFolderPath
+    );
 
     term = vscode.window.createTerminal({
       name: name,
-      // cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
+      cwd: firstCwd,
     });
 
     term.show();
 
     //the first terminal split is already created from when we called createTerminal
     if (terminalWindow.splitTerminals.length > 0) {
-      const { commands, shouldRunCommands } = terminalWindow.splitTerminals[0];
+      const { commands, shouldRunCommands } = firstTerminalConfig;
       commands &&
         commandsToRunInTerms.push({
           commands,
@@ -66,7 +97,16 @@ export default async function restoreTerminals(configuration: Configuration) {
       const splitTerminal = terminalWindow.splitTerminals[i];
       const createdSplitTerm = await createNewSplitTerminal(splitTerminal.name);
 
-      const { commands, shouldRunCommands } = splitTerminal;
+      const { commands, shouldRunCommands, cwd } = splitTerminal;
+      const splitCwd = resolveCwd(cwd, terminalWindow.workspaceFolderPath);
+
+      // For split terminals, we need to send a cd command since we can't set cwd directly
+      if (splitCwd) {
+        const cdCommand = `cd "${splitCwd}"`;
+        createdSplitTerm.sendText(cdCommand, true);
+        await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
+      }
+
       commands &&
         commandsToRunInTerms.push({
           commands,

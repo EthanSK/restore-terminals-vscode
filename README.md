@@ -43,7 +43,9 @@ Simply configure your VSCode settings JSON file to look something like this:
 
 The outer array represents a integrated VSCode terminal window, and the `splitTerminals` array contains the information about how each terminal window should be split up.
 
-You can also use a custom config file under. The file should be at `.vscode/restore-terminals.json` in any workspace you want. A sample config file is [here](https://github.com/EthanSK/restore-terminals-vscode/blob/master/sample-test-project/.vscode/restore-terminals.json). If this config file is present, Restore Terminals will try and load settings from it first, then use `settings.json` as a fallback.
+You can also use a custom config file. The file should be at `.vscode/restore-terminals.json` in any workspace folder you want. A sample config file is [here](https://github.com/EthanSK/restore-terminals-vscode/blob/master/sample-test-project/.vscode/restore-terminals.json). If this config file is present, Restore Terminals will try and load settings from it first, then use `settings.json` as a fallback.
+
+In a multi-root workspace, every folder that contains `.vscode/restore-terminals.json` is loaded and its terminals are restored. Each terminal window is spawned in the workspace folder that owns that config file (unless you set an explicit `cwd` on a split terminal, which is resolved relative to that folder).
 
 ## Extra info
 

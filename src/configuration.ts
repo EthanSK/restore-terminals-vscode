@@ -46,8 +46,12 @@ async function getConfigurationFromJsonFile(): Promise<
   if (!workspaceFolders) {
     return undefined;
   }
-  let configData: JsonConfiguration | undefined;
-  //find any workspace with the config
+  
+  // Collect all configs from all workspace folders
+  const allTerminalWindows: TerminalWindow[] = [];
+  let mergedConfig: Partial<Configuration> = {};
+
+  // Load config from each workspace folder
   for (const folder of workspaceFolders) {
     try {
       const configFilePath = vscode.Uri.file(
@@ -55,14 +59,38 @@ async function getConfigurationFromJsonFile(): Promise<
       );
       const fileData = await vscode.workspace.fs.readFile(configFilePath);
       const fileDataString = new TextDecoder("utf-8").decode(fileData);
-      configData = JSON.parse(fileDataString);
+      const configData: JsonConfiguration = JSON.parse(fileDataString);
+      
+      // Merge global settings (last file wins when multiple workspaces define them)
+      if (configData.keepExistingTerminalsOpen !== undefined) {
+        mergedConfig.keepExistingTerminalsOpen = configData.keepExistingTerminalsOpen;
+      }
+      if (configData.artificialDelayMilliseconds !== undefined) {
+        mergedConfig.artificialDelayMilliseconds = configData.artificialDelayMilliseconds;
+      }
+      if (configData.runOnStartup !== undefined) {
+        mergedConfig.runOnStartup = configData.runOnStartup;
+      }
+      
+      // Add terminal windows with workspace folder path
+      if (configData.terminals) {
+        const terminalWindowsWithWorkspace = configData.terminals.map((tw) => ({
+          ...tw,
+          workspaceFolderPath: folder.uri.fsPath,
+        }));
+        allTerminalWindows.push(...terminalWindowsWithWorkspace);
+      }
     } catch (error) {
       console.log("No config in workspace", folder, error);
     }
   }
-  if (!configData) return undefined;
+  
+  if (allTerminalWindows.length === 0 && Object.keys(mergedConfig).length === 0) {
+    return undefined;
+  }
+  
   return {
-    ...configData,
-    terminalWindows: configData?.terminals, //shim
+    ...mergedConfig,
+    terminalWindows: allTerminalWindows.length > 0 ? allTerminalWindows : undefined,
   };
 }

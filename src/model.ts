@@ -4,10 +4,12 @@ export interface TerminalConfig {
   commands?: string[];
   name?: string;
   shouldRunCommands?: boolean; //whether to actually run the commands, or just paste them in
+  cwd?: string; //working directory relative to workspace folder
 }
 
 export interface TerminalWindow {
   splitTerminals?: TerminalConfig[];
+  workspaceFolderPath?: string; // Path to the workspace folder this config belongs to (for multi-root workspaces)
 }
 
 export interface Configuration {
