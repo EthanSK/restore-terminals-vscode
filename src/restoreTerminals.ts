@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { delay } from "./utils";
-import { Configuration, TerminalConfig, TerminalWindow } from "./model";
+import { Configuration } from "./model";
 
 const DEFAULT_ARTIFICAL_DELAY = 300;
 const SPLIT_TERM_CHECK_DELAY = 100;
@@ -41,18 +41,19 @@ export default async function restoreTerminals(configuration: Configuration) {
     }
 
     let term!: vscode.Terminal;
-    let name = terminalWindow.splitTerminals[0]?.name;
+    const firstTerminalConfig = terminalWindow.splitTerminals[0];
+    let name = firstTerminalConfig?.name;
 
     term = vscode.window.createTerminal({
       name: name,
-      // cwd: vscode.window.activeTextEditor?.document.uri.fsPath, //i think this happens by default
+      cwd: terminalWindow.workspaceFolderPath,
     });
 
     term.show();
 
     //the first terminal split is already created from when we called createTerminal
     if (terminalWindow.splitTerminals.length > 0) {
-      const { commands, shouldRunCommands } = terminalWindow.splitTerminals[0];
+      const { commands, shouldRunCommands } = firstTerminalConfig;
       commands &&
         commandsToRunInTerms.push({
           commands,
@@ -67,6 +68,16 @@ export default async function restoreTerminals(configuration: Configuration) {
       const createdSplitTerm = await createNewSplitTerminal(splitTerminal.name);
 
       const { commands, shouldRunCommands } = splitTerminal;
+
+      // Split terminals inherit the parent cwd; cd into the config's workspace folder when needed
+      if (terminalWindow.workspaceFolderPath) {
+        createdSplitTerm.sendText(
+          `cd "${terminalWindow.workspaceFolderPath}"`,
+          true
+        );
+        await delay(artificialDelayMilliseconds ?? DEFAULT_ARTIFICAL_DELAY);
+      }
+
       commands &&
         commandsToRunInTerms.push({
           commands,

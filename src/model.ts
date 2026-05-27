@@ -8,6 +8,7 @@ export interface TerminalConfig {
 
 export interface TerminalWindow {
   splitTerminals?: TerminalConfig[];
+  workspaceFolderPath?: string; // Path to the workspace folder this config belongs to (for multi-root workspaces)
 }
 
 export interface Configuration {
