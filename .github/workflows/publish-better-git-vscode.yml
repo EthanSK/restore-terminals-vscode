@@ -1,0 +1,40 @@
+name: Publish Better Git VS Code
+
+on:
+  push:
+    branches:
+      - publish-better-git-vscode-20260622
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Better Git VS Code
+        uses: actions/checkout@v4
+        with:
+          repository: EthanSK/go-to-next-change
+          ref: b32704f2a6bcb45bfea0a67bb653bd3f6603a18f
+          path: better-git-vscode
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Verify extension identity
+        working-directory: better-git-vscode
+        run: |
+          test "$(node -p "require('./package.json').publisher")" = "EthanSK"
+          test "$(node -p "require('./package.json').name")" = "better-git-vscode"
+          test "$(node -p "require('./package.json').version")" = "1.0.0"
+
+      - name: Install dependencies
+        working-directory: better-git-vscode
+        run: npm ci
+
+      - name: Publish extension
+        working-directory: better-git-vscode
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: npx @vscode/vsce publish -p "$VSCE_PAT"
