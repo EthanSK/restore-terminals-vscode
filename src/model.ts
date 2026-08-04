@@ -9,6 +9,7 @@ export interface TerminalConfig {
 export interface TerminalWindow {
   cwd?: string;
   splitTerminals?: TerminalConfig[];
+  setAsActive?: boolean; //whether to keep the display of the terminal window open even if more windows were opened after this one
 }
 
 export interface Configuration {
