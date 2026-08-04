@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.1.11
+
+- Documented the recommended dedicated-file configuration for multi-root workspaces and Git worktrees.
+
 ## 1.1.10
 
 - Added validation and autocomplete for `.vscode/restore-terminals.json` files.

@@ -48,6 +48,31 @@ Set `cwd` on a terminal window when its commands must start in a specific worksp
 
 You can also use a custom config file. The file should be at `.vscode/restore-terminals.json` in any workspace you want. A sample config file is [here](https://github.com/EthanSK/restore-terminals-vscode/blob/master/sample-test-project/.vscode/restore-terminals.json). If this config file is present, Restore Terminals will try and load settings from it first, then use `settings.json` as a fallback. VSCode validates this file and provides the same descriptions and autocomplete as the Restore Terminals settings.
 
+### Multi-root workspaces and Git worktrees
+
+Use `.vscode/restore-terminals.json` when the same VSCode window contains a repository's primary folder and one or more Git worktrees. Restore Terminals settings are currently window-scoped, so VSCode does not apply them from an individual folder's `.vscode/settings.json` in a multi-root workspace.
+
+Set `cwd` on every terminal window to the named primary workspace folder so terminals do not follow whichever worktree or editor was active when they were restored:
+
+```json
+{
+  "runOnStartup": false,
+  "terminals": [
+    {
+      "cwd": "${workspaceFolder:my-project}",
+      "splitTerminals": [
+        {
+          "name": "frontend",
+          "commands": ["npm run dev"]
+        }
+      ]
+    }
+  ]
+}
+```
+
+`my-project` must match the primary folder's name in the VSCode workspace. Restore Terminals stops before closing existing terminals if that named folder is unavailable. If several workspace folders contain `.vscode/restore-terminals.json`, keep their contents identical because the last matching file in the workspace currently supplies the window's terminal layout.
+
 ## Extra info
 
 The order of split terminals from left to right is the order in the array.
