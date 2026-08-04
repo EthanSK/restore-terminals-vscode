@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.1.10
+
+- Added validation and autocomplete for `.vscode/restore-terminals.json` files.
+- The dedicated-file schema is generated from the existing Restore Terminals settings schema so both formats stay in sync.
+
 ## 1.1.9
 
 - Added a terminal-window `cwd` option with named multi-root workspace-folder resolution.
